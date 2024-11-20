@@ -1,0 +1,1 @@
+http://localhost:8080/v1 - to test if the server is up.
