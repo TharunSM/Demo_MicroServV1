@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class MicroServV1TestOnline {
 
-    @GetMapping("/v1")
+    @GetMapping("/v1/healthcheck")
     public ResponseEntity<String> SererOnlineCheck(){
         return  ResponseEntity.status(HttpStatus.OK).body("Server v1 working !!");
     }
