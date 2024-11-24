@@ -3,30 +3,77 @@ package com.tharuntech.Demo_MicroServ1.service.Impl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tharuntech.Demo_MicroServ1.entity.Model.ValorantAPIResponseInfo;
+import com.tharuntech.Demo_MicroServ1.entity.Model.ValorantBundleInfo;
+import com.tharuntech.Demo_MicroServ1.entity.ValorantSkinHub;
+import com.tharuntech.Demo_MicroServ1.repository.ValoSkinHubRepo;
 import org.apache.logging.log4j.LogManager;
 
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import com.tharuntech.Demo_MicroServ1.service.ValorantSkinHubGetAllInfoService;
 
+import java.util.List;
+
 
 
 @Service
 public class ValorantSkinHubGetAllInfoServiceImpl implements ValorantSkinHubGetAllInfoService {
 
-    //JPARepo not yet configured;
+
+
+    @Value("${valo.BundleInfoApi.url}")
+    private String serviceUrl;
+
+
+
     @Autowired
     private RestTemplateBuilder restTemplateBuilder;
 
+    @Autowired
+    private ValoSkinHubRepo valoSkinHubRepo;
+
     private final Logger logger = LogManager.getLogger(ValorantSkinHubGetAllInfoServiceImpl.class);
+
+//    public ValorantSkinHub getAllSkinBundles{
+//
+//    }
+
 
     //make a method to store the data from calling the bellow method and storing it in a db below and call that db in a new method and send the data with our required params
     //https://console.aiven.io/account/a4f7084bd2b9/project/tharunterror9840-0892/services/mysqldb-valoranthub/overview
 
+    public void addAlltheDataFromExternalApiToOurDB(){
+        var allBundleInfo = callExternalApi();
+        //parse it to our ValorantSkinHub pojo and add to db
+        if(allBundleInfo!=null){
+            List<ValorantBundleInfo> allBundlesList = allBundleInfo.getData();
+            Integer count =0;
+            for(ValorantBundleInfo BundleInfo : allBundlesList){
+                //from here iterate and add the data to ur db;
+                var uuid = BundleInfo.getUuid();
+                var bundleName = BundleInfo.getDisplayName();
+                var iconVert = BundleInfo.getVerticalPromoImage();
+                var iconHori = BundleInfo.getDisplayIcon();
+                var BundleInfoadd = new ValorantSkinHub();
+                BundleInfoadd.setUuid(uuid);
+                BundleInfoadd.setBundleName(bundleName);
+                BundleInfoadd.setIconVert(iconVert);
+                BundleInfoadd.setIconHori(iconHori);
+                valoSkinHubRepo.save(BundleInfoadd);
+                count++;
+            }
+            logger.info("--------------ValorantSkinHubGetAllInfoServiceImpl.addAlltheDataFromExternalApiToOurDB() -- Service == Added successfull to db---------");
+            logger.info("--------------ValorantSkinHubGetAllInfoServiceImpl.addAlltheDataFromExternalApiToOurDB() -- Service == No of Bundles added {}---------",count);
+
+        }else {
+            logger.error("--------------ValorantSkinHubGetAllInfoServiceImpl.addAlltheDataFromExternalApiToOurDB() -- Service == No data found in external call---------");
+        }
+    }
     //converts the ValorantAPI call to our pojo
     public ValorantAPIResponseInfo callExternalApi(){
 
@@ -34,9 +81,8 @@ public class ValorantSkinHubGetAllInfoServiceImpl implements ValorantSkinHubGetA
 
         ObjectMapper mapper = new ObjectMapper();
 
-        String url = "https://valorant-api.com/v1/bundles";
         RestTemplate restTemplate = restTemplateBuilder.build();
-        ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
+        ResponseEntity<String> response = restTemplate.getForEntity(serviceUrl, String.class);
         logger.info("--------------ValorantSkinHubGetAllInfoServiceImpl.callExternalApi() -- Service == VALORANTAPI CALL WORKING---------");
         var responseBody = response.getBody();
         ValorantAPIResponseInfo ApiResponseData = null;
@@ -51,6 +97,17 @@ public class ValorantSkinHubGetAllInfoServiceImpl implements ValorantSkinHubGetA
 
     }
 
+    @Override
+    public String addAllBundlesTodb() {
+        List<ValorantSkinHub> allBundlesGotFromDb = valoSkinHubRepo.findAll();
+
+        if(allBundlesGotFromDb!=null){
+            return "data already exist in Db";
+        }else{
+            addAlltheDataFromExternalApiToOurDB();
+            return "data Successfully added to our DB";
+        }
+    }
 
 
 }
