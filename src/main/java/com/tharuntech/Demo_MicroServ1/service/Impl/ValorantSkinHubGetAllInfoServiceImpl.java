@@ -91,8 +91,8 @@ public class ValorantSkinHubGetAllInfoServiceImpl implements ValorantSkinHubGetA
                 var uuid = BundleInfo.getUuid();
 
                 //if it exist then we dont add else we add the data
-                Optional<ValorantSkinHub> bundlefromdb = valoSkinHubRepo.existByuuid(uuid);
-                if(bundlefromdb.isEmpty()){
+                Optional<String> bundleuuidfromdb = valoSkinHubRepo.existdataByuuid(uuid);
+                if(bundleuuidfromdb.isEmpty()){
                     var bundleName = BundleInfo.getDisplayName();
                     var iconVert = BundleInfo.getVerticalPromoImage();
                     var iconHori = BundleInfo.getDisplayIcon();
@@ -103,8 +103,9 @@ public class ValorantSkinHubGetAllInfoServiceImpl implements ValorantSkinHubGetA
                     BundleInfoadd.setIconVert(iconVert);
                     BundleInfoadd.setIconHori(iconHori);
                     valoSkinHubRepo.save(BundleInfoadd);
+                    count++;
                 }
-                count++;
+
             }
             logger.info("--------------ValorantSkinHubGetAllInfoServiceImpl.addDataFromExternalApiToOurDBthatNotExist() -- Service == Added exta successfull to db---------");
             logger.info("--------------ValorantSkinHubGetAllInfoServiceImpl.addDataFromExternalApiToOurDBthatNotExist() -- Service == Updated Bundles added {}---------",count);
@@ -141,11 +142,11 @@ public class ValorantSkinHubGetAllInfoServiceImpl implements ValorantSkinHubGetA
     public String addAllBundlesTodb(String value) {
         Optional<ValorantSkinHub> allBundlesGotFromDb = valoSkinHubRepo.findById(1);
 
-        if(allBundlesGotFromDb.isPresent()){
-            return "data already exist in Db";
-        }else if(value.equals("true")){
+        if(value.equalsIgnoreCase("true")){
             addDataFromExternalApiToOurDBthatNotExist();
-            return "Force Updated our data base with Latest Update";
+            return "Force Updated our database with Latest Update";
+        }else if(allBundlesGotFromDb.isPresent()){
+            return "data already exist in Db";
         }else{
             addAlltheDataFromExternalApiToOurDB();
             return "data Successfully added to our DB";
