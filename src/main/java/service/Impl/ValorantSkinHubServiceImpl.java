@@ -27,6 +27,8 @@ public class ValorantSkinHubServiceImpl implements ValorantSkinHubService {
         ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
         var responseBody = response.getBody();
 
+        //add a object mapper to convet this to data and then convert it to a list of ValorantBundleInfo;
+
         ValorantAPIResponseInfo ApiResponseData = mapper.readValue(responseBody, ValorantAPIResponseInfo.class);
 
         //must convert the data from ApiResponse to List ValorantBundleInfo
