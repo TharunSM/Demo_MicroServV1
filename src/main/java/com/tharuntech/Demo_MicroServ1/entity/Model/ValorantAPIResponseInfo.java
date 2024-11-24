@@ -8,6 +8,7 @@ import java.util.List;
 @Data
 public class ValorantAPIResponseInfo {
 
+    //all the info of the ValorantApi called is stored here
     private List<ValorantBundleInfo> data;
 
     @JsonIgnore

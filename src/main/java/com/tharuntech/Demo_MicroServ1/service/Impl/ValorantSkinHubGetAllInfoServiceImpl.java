@@ -24,8 +24,10 @@ public class ValorantSkinHubGetAllInfoServiceImpl implements ValorantSkinHubGetA
 
     private final Logger logger = LogManager.getLogger(ValorantSkinHubGetAllInfoServiceImpl.class);
 
+    //make a method to store the data from calling the bellow method and storing it in a db below and call that db in a new method and send the data with our required params
+    //https://console.aiven.io/account/a4f7084bd2b9/project/tharunterror9840-0892/services/mysqldb-valoranthub/overview
 
-
+    //converts the ValorantAPI call to our pojo
     public ValorantAPIResponseInfo callExternalApi(){
 
         logger.info("--------------ValorantSkinHubGetAllInfoServiceImpl.callExternalApi() -- Service == ---------");
@@ -37,10 +39,10 @@ public class ValorantSkinHubGetAllInfoServiceImpl implements ValorantSkinHubGetA
         ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
         logger.info("--------------ValorantSkinHubGetAllInfoServiceImpl.callExternalApi() -- Service == VALORANTAPI CALL WORKING---------");
         var responseBody = response.getBody();
-        ValorantAPIResponseInfo ApiResponseData =null;
+        ValorantAPIResponseInfo ApiResponseData = null;
         try {
             ApiResponseData = mapper.readValue(responseBody, ValorantAPIResponseInfo.class);
-            logger.info("--------------ValorantSkinHubGetAllInfoServiceImpl.callExternalApi() -- Service ==API Converted---------");
+            logger.info("--------------ValorantSkinHubGetAllInfoServiceImpl.callExternalApi() -- Service == API Converted---------");
             return ApiResponseData;
         }catch (JsonProcessingException e){
             logger.error(e);

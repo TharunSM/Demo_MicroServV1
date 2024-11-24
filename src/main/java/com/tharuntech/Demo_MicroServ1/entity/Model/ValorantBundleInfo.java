@@ -6,6 +6,7 @@ import lombok.Data;
 @Data
 public class ValorantBundleInfo {
 
+    //parsed ValorantAPIResponse is stored here
     private String uuid;
     private String displayName;
     private String displayIcon;
