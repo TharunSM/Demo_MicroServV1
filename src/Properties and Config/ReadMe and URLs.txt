@@ -6,7 +6,7 @@ Making a Valorant Skins db with user rating, price and availability criteria (st
 
 Home API : https://dash.valorant-api.com/
 
-
+setup up your db password in environment variable as VALO_HUB_DB_PASSWORD
 
 using this api to get valorant skin bundle info
 https://valorant-api.com/v1/bundles
