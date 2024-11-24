@@ -28,17 +28,19 @@ public class ValorantSkinHubGetAllInfoServiceImpl implements ValorantSkinHubGetA
 
     public ValorantAPIResponseInfo callExternalApi(){
 
-        logger.info("in call api service class");
+        logger.info("--------------ValorantSkinHubGetAllInfoServiceImpl.callExternalApi() -- Service == ---------");
 
         ObjectMapper mapper = new ObjectMapper();
 
         String url = "https://valorant-api.com/v1/bundles";
         RestTemplate restTemplate = restTemplateBuilder.build();
         ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
+        logger.info("--------------ValorantSkinHubGetAllInfoServiceImpl.callExternalApi() -- Service == VALORANTAPI CALL WORKING---------");
         var responseBody = response.getBody();
         ValorantAPIResponseInfo ApiResponseData =null;
         try {
             ApiResponseData = mapper.readValue(responseBody, ValorantAPIResponseInfo.class);
+            logger.info("--------------ValorantSkinHubGetAllInfoServiceImpl.callExternalApi() -- Service ==API Converted---------");
             return ApiResponseData;
         }catch (JsonProcessingException e){
             logger.error(e);

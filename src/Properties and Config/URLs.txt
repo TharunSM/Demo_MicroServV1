@@ -1,15 +1,24 @@
 http://localhost:8080/v1 - to test if the server is up.
 
+Logging info general format - logger.info("--------------ValorantSkinHubGetAllInfoServiceImpl.callExternalApi() -- Service == VALORANTAPI CALL WORKING---------");
+
 Making a Valorant Skins db with user rating, price and availability criteria (store(green) ,nightmarket(purple), event(gold))
 
 Home API : https://dash.valorant-api.com/
+
+
 
 using this api to get valorant skin bundle info
 https://valorant-api.com/v1/bundles
 
 using this api for
 
+
+
+
 add credits to the api
+
+
 
 f1 api:
 https://ergast.com/mrd/methods/seasons/
