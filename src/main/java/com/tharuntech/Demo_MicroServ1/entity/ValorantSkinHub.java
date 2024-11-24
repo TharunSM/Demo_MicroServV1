@@ -1,4 +1,4 @@
-package entity;
+package com.tharuntech.Demo_MicroServ1.entity;
 
 import lombok.Data;
 
