@@ -7,5 +7,5 @@ import org.springframework.stereotype.Service;
 public interface ValorantSkinHubGetAllInfoService {
 
     ValorantAPIResponseInfo callExternalApi() ;
-    String addAllBundlesTodb();
+    String addAllBundlesTodb(String value);
 }

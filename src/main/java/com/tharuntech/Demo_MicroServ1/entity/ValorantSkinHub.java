@@ -15,7 +15,6 @@ public class ValorantSkinHub {
     private Integer vskinId;
 
     private String uuid;
-
     private String BundleName;
 
     private String iconVert;

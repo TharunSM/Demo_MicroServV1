@@ -18,7 +18,7 @@ import org.springframework.web.client.RestTemplate;
 import com.tharuntech.Demo_MicroServ1.service.ValorantSkinHubGetAllInfoService;
 
 import java.util.List;
-
+import java.util.Optional;
 
 
 @Service
@@ -47,6 +47,7 @@ public class ValorantSkinHubGetAllInfoServiceImpl implements ValorantSkinHubGetA
     //make a method to store the data from calling the bellow method and storing it in a db below and call that db in a new method and send the data with our required params
     //https://console.aiven.io/account/a4f7084bd2b9/project/tharunterror9840-0892/services/mysqldb-valoranthub/overview
 
+    //add allBundles
     public void addAlltheDataFromExternalApiToOurDB(){
         var allBundleInfo = callExternalApi();
         //parse it to our ValorantSkinHub pojo and add to db
@@ -71,9 +72,48 @@ public class ValorantSkinHubGetAllInfoServiceImpl implements ValorantSkinHubGetA
             logger.info("--------------ValorantSkinHubGetAllInfoServiceImpl.addAlltheDataFromExternalApiToOurDB() -- Service == No of Bundles added {}---------",count);
 
         }else {
-            logger.error("--------------ValorantSkinHubGetAllInfoServiceImpl.addAlltheDataFromExternalApiToOurDB() -- Service == No data found in external call---------");
+            logger.error("--------------ValorantSkinHubGetAllInfoServiceImpl.addAlltheDataFromExternalApiToOurDB() -- Service == No data found in external api call---------");
         }
     }
+
+    //add only the bundle that does not exist
+    public void addDataFromExternalApiToOurDBthatNotExist(){
+
+        var allBundleInfo = callExternalApi();
+
+        //parse it to our ValorantSkinHub pojo and add to db
+        if(allBundleInfo!=null){
+            List<ValorantBundleInfo> allBundlesList = allBundleInfo.getData();
+            Integer count =0;
+            for(ValorantBundleInfo BundleInfo : allBundlesList){
+
+                //from here iterate and check in our database;
+                var uuid = BundleInfo.getUuid();
+
+                //if it exist then we dont add else we add the data
+                Optional<ValorantSkinHub> bundlefromdb = valoSkinHubRepo.existByuuid(uuid);
+                if(bundlefromdb.isEmpty()){
+                    var bundleName = BundleInfo.getDisplayName();
+                    var iconVert = BundleInfo.getVerticalPromoImage();
+                    var iconHori = BundleInfo.getDisplayIcon();
+                    var BundleInfoadd = new ValorantSkinHub();
+
+                    BundleInfoadd.setUuid(uuid);
+                    BundleInfoadd.setBundleName(bundleName);
+                    BundleInfoadd.setIconVert(iconVert);
+                    BundleInfoadd.setIconHori(iconHori);
+                    valoSkinHubRepo.save(BundleInfoadd);
+                }
+                count++;
+            }
+            logger.info("--------------ValorantSkinHubGetAllInfoServiceImpl.addDataFromExternalApiToOurDBthatNotExist() -- Service == Added exta successfull to db---------");
+            logger.info("--------------ValorantSkinHubGetAllInfoServiceImpl.addDataFromExternalApiToOurDBthatNotExist() -- Service == Updated Bundles added {}---------",count);
+
+        }else {
+            logger.error("--------------ValorantSkinHubGetAllInfoServiceImpl.addDataFromExternalApiToOurDBthatNotExist() -- Service == No data found in external api call---------");
+        }
+    }
+
     //converts the ValorantAPI call to our pojo
     public ValorantAPIResponseInfo callExternalApi(){
 
@@ -98,11 +138,14 @@ public class ValorantSkinHubGetAllInfoServiceImpl implements ValorantSkinHubGetA
     }
 
     @Override
-    public String addAllBundlesTodb() {
-        List<ValorantSkinHub> allBundlesGotFromDb = valoSkinHubRepo.findAll();
+    public String addAllBundlesTodb(String value) {
+        Optional<ValorantSkinHub> allBundlesGotFromDb = valoSkinHubRepo.findById(1);
 
-        if(allBundlesGotFromDb!=null){
+        if(allBundlesGotFromDb.isPresent()){
             return "data already exist in Db";
+        }else if(value.equals("true")){
+            addDataFromExternalApiToOurDBthatNotExist();
+            return "Force Updated our data base with Latest Update";
         }else{
             addAlltheDataFromExternalApiToOurDB();
             return "data Successfully added to our DB";
