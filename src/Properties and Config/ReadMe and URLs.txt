@@ -13,8 +13,10 @@ https://valorant-api.com/v1/bundles
 
 using this api for
 
-
-
+Features:
+Must make another table and POJO for entity
+rating and main table must contain timestamp
+Main Table must contain feedback description and bundle details
 
 add credits to the api
 
