@@ -18,6 +18,14 @@ Must make another table and POJO for entity
 rating and main table must contain timestamp
 Main Table must contain feedback description and bundle details
 
+Buy or use a cheap vps to host the application in cloud for domain use netlify
+
+make some endpoints admin only like update, insert
+
+
+we can nginx wo run of http server
+we can use certbot if we want free ssl if we buy a domain
+
 add credits to the api
 
 
