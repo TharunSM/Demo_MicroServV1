@@ -21,7 +21,7 @@ public class ValorantSkinHubController {
 
     private final Logger logger = LogManager.getLogger(ValorantSkinHubController.class);
 
-
+    //to get all unparsed preRecords
     @GetMapping("/v1/getPreRecords")
     public ResponseEntity<ValorantAPIResponseInfo> getAllBundleInfo(){
         logger.info("--------------ValorantSkinHubController.getAllBundleInfo() Inside controller---------");

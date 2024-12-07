@@ -17,6 +17,7 @@ Features:
 Must make another table and POJO for entity
 rating and main table must contain timestamp
 Main Table must contain feedback description and bundle details
+add slf4j or aop
 
 Buy or use a cheap vps to host the application in cloud for domain use netlify
 
