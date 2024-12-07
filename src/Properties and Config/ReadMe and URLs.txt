@@ -18,6 +18,8 @@ Must make another table and POJO for entity
 rating and main table must contain timestamp
 Main Table must contain feedback description and bundle details
 add slf4j or aop
+ //make a method to store the data from calling the bellow method and storing it in a db below and call that db in a new method and send the data with our required params
+    //https://console.aiven.io/account/a4f7084bd2b9/project/tharunterror9840-0892/services/mysqldb-valoranthub/overview
 
 Buy or use a cheap vps to host the application in cloud for domain use netlify
 

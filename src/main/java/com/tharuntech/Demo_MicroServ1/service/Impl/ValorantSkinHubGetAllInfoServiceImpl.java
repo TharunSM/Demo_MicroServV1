@@ -44,8 +44,7 @@ public class ValorantSkinHubGetAllInfoServiceImpl implements ValorantSkinHubGetA
 //    }
 
 
-    //make a method to store the data from calling the bellow method and storing it in a db below and call that db in a new method and send the data with our required params
-    //https://console.aiven.io/account/a4f7084bd2b9/project/tharunterror9840-0892/services/mysqldb-valoranthub/overview
+
 
     //add allBundles
     public void addAlltheDataFromExternalApiToOurDB(){
