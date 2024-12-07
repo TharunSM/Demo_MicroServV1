@@ -29,7 +29,7 @@ make some endpoints admin only like update, insert
 we can nginx wo run of http server
 we can use certbot if we want free ssl if we buy a domain
 
-change from laptop
+change from laptop c
 
 add credits to the api
 
