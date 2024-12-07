@@ -16,15 +16,15 @@ public class MicroServV1TestOnline {
     private ValorantSkinHubGetAllInfoService valoServ;
 
     @GetMapping("/v1/healthcheck")
-    public ResponseEntity<String> SeverOnlineCheck(){
-        return  ResponseEntity.status(HttpStatus.OK).body("Server v1 working !!");
+    public ResponseEntity<String> SeverOnlineCheck() {
+        return ResponseEntity.status(HttpStatus.OK).body("Server v1 working !!");
     }
 
     // to force update the db /AddAllBundleToDB?forceUpdate=true
     @GetMapping("/AddAllBundleToDB")
-    public ResponseEntity<String> addAllBundlesToDb(@RequestParam(name = "forceUpdate", required = false) String value){
+    public ResponseEntity<String> addAllBundlesToDb(@RequestParam(name = "forceUpdate", required = false) String value) {
         var infoOnAddAllBundles = valoServ.addAllBundlesTodb(value);
-        return ResponseEntity.status(HttpStatus.OK).body("DB Bundle Status = "+infoOnAddAllBundles);
+        return ResponseEntity.status(HttpStatus.OK).body("DB Bundle Status = " + infoOnAddAllBundles);
     }
 
 

@@ -9,9 +9,10 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface ValoSkinHubRepo extends JpaRepository<ValorantSkinHub,Integer> {
+public interface ValoSkinHubRepo extends JpaRepository<ValorantSkinHub, Integer> {
 
     @Query("SELECT v.uuid FROM ValorantSkinHub v WHERE v.uuid = :uuid_check")
+
     public Optional<String> existdataByuuid(@Param("uuid_check") String uuid_check);
 
 }

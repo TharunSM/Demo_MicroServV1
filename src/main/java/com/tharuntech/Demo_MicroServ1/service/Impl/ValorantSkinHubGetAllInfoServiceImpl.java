@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import com.tharuntech.Demo_MicroServ1.service.ValorantSkinHubGetAllInfoService;
 
+import javax.swing.*;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,10 +26,8 @@ import java.util.Optional;
 public class ValorantSkinHubGetAllInfoServiceImpl implements ValorantSkinHubGetAllInfoService {
 
 
-
     @Value("${valo.BundleInfoApi.url}")
     private String serviceUrl;
-
 
 
     @Autowired
@@ -39,21 +38,15 @@ public class ValorantSkinHubGetAllInfoServiceImpl implements ValorantSkinHubGetA
 
     private final Logger logger = LogManager.getLogger(ValorantSkinHubGetAllInfoServiceImpl.class);
 
-//    public ValorantSkinHub getAllSkinBundles{
-//
-//    }
-
-
-
 
     //add allBundles
-    public void addAlltheDataFromExternalApiToOurDB(){
+    public void addAlltheDataFromExternalApiToOurDB() {
         var allBundleInfo = callExternalApi();
         //parse it to our ValorantSkinHub pojo and add to db
-        if(allBundleInfo!=null){
+        if (allBundleInfo != null) {
             List<ValorantBundleInfo> allBundlesList = allBundleInfo.getData();
-            Integer count =0;
-            for(ValorantBundleInfo BundleInfo : allBundlesList){
+            Integer count = 0;
+            for (ValorantBundleInfo BundleInfo : allBundlesList) {
                 //from here iterate and add the data to ur db;
                 var uuid = BundleInfo.getUuid();
                 var bundleName = BundleInfo.getDisplayName();
@@ -68,30 +61,30 @@ public class ValorantSkinHubGetAllInfoServiceImpl implements ValorantSkinHubGetA
                 count++;
             }
             logger.info("--------------ValorantSkinHubGetAllInfoServiceImpl.addAlltheDataFromExternalApiToOurDB() -- Service == Added successfull to db---------");
-            logger.info("--------------ValorantSkinHubGetAllInfoServiceImpl.addAlltheDataFromExternalApiToOurDB() -- Service == No of Bundles added {}---------",count);
+            logger.info("--------------ValorantSkinHubGetAllInfoServiceImpl.addAlltheDataFromExternalApiToOurDB() -- Service == No of Bundles added {}---------", count);
 
-        }else {
+        } else {
             logger.error("--------------ValorantSkinHubGetAllInfoServiceImpl.addAlltheDataFromExternalApiToOurDB() -- Service == No data found in external api call---------");
         }
     }
 
     //add only the bundle that does not exist
-    public void addDataFromExternalApiToOurDBthatNotExist(){
+    public void addDataFromExternalApiToOurDBthatNotExist() {
 
         var allBundleInfo = callExternalApi();
 
         //parse it to our ValorantSkinHub pojo and add to db
-        if(allBundleInfo!=null){
+        if (allBundleInfo != null) {
             List<ValorantBundleInfo> allBundlesList = allBundleInfo.getData();
-            Integer count =0;
-            for(ValorantBundleInfo BundleInfo : allBundlesList){
+            Integer count = 0;
+            for (ValorantBundleInfo BundleInfo : allBundlesList) {
 
                 //from here iterate and check in our database;
                 var uuid = BundleInfo.getUuid();
 
                 //if it exist then we dont add else we add the data
                 Optional<String> bundleuuidfromdb = valoSkinHubRepo.existdataByuuid(uuid);
-                if(bundleuuidfromdb.isEmpty()){
+                if (bundleuuidfromdb.isEmpty()) {
                     var bundleName = BundleInfo.getDisplayName();
                     var iconVert = BundleInfo.getVerticalPromoImage();
                     var iconHori = BundleInfo.getDisplayIcon();
@@ -107,15 +100,15 @@ public class ValorantSkinHubGetAllInfoServiceImpl implements ValorantSkinHubGetA
 
             }
             logger.info("--------------ValorantSkinHubGetAllInfoServiceImpl.addDataFromExternalApiToOurDBthatNotExist() -- Service == Added exta successfull to db---------");
-            logger.info("--------------ValorantSkinHubGetAllInfoServiceImpl.addDataFromExternalApiToOurDBthatNotExist() -- Service == Updated Bundles added {}---------",count);
+            logger.info("--------------ValorantSkinHubGetAllInfoServiceImpl.addDataFromExternalApiToOurDBthatNotExist() -- Service == Updated Bundles added {}---------", count);
 
-        }else {
+        } else {
             logger.error("--------------ValorantSkinHubGetAllInfoServiceImpl.addDataFromExternalApiToOurDBthatNotExist() -- Service == No data found in external api call---------");
         }
     }
 
     //converts the ValorantAPI call to our pojo
-    public ValorantAPIResponseInfo callExternalApi(){
+    public ValorantAPIResponseInfo callExternalApi() {
 
         logger.info("--------------ValorantSkinHubGetAllInfoServiceImpl.callExternalApi() -- Service == ---------");
 
@@ -130,7 +123,7 @@ public class ValorantSkinHubGetAllInfoServiceImpl implements ValorantSkinHubGetA
             ApiResponseData = mapper.readValue(responseBody, ValorantAPIResponseInfo.class);
             logger.info("--------------ValorantSkinHubGetAllInfoServiceImpl.callExternalApi() -- Service == API Converted---------");
             return ApiResponseData;
-        }catch (JsonProcessingException e){
+        } catch (JsonProcessingException e) {
             logger.error(e);
         }
         return ApiResponseData;
@@ -141,15 +134,20 @@ public class ValorantSkinHubGetAllInfoServiceImpl implements ValorantSkinHubGetA
     public String addAllBundlesTodb(String value) {
         Optional<ValorantSkinHub> allBundlesGotFromDb = valoSkinHubRepo.findById(1);
 
-        if(value.equalsIgnoreCase("true")){
+        if (value.equalsIgnoreCase("true")) {
             addDataFromExternalApiToOurDBthatNotExist();
             return "Force Updated our database with Latest Update";
-        }else if(allBundlesGotFromDb.isPresent()){
+        } else if (allBundlesGotFromDb.isPresent()) {
             return "data already exist in Db";
-        }else{
+        } else {
             addAlltheDataFromExternalApiToOurDB();
             return "data Successfully added to our DB";
         }
+    }
+
+    @Override
+    public List<ValorantSkinHub> getAllBundels() {
+        return valoSkinHubRepo.findAll();
     }
 
 
