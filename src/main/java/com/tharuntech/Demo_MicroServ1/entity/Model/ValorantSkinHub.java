@@ -1,4 +1,4 @@
-package com.tharuntech.Demo_MicroServ1.entity;
+package com.tharuntech.Demo_MicroServ1.entity.Model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

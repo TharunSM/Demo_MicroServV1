@@ -1,6 +1,6 @@
 package com.tharuntech.Demo_MicroServ1.repository;
 
-import com.tharuntech.Demo_MicroServ1.entity.ValorantSkinHub;
+import com.tharuntech.Demo_MicroServ1.entity.Model.ValorantSkinHub;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

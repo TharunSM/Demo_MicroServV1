@@ -2,9 +2,8 @@ package com.tharuntech.Demo_MicroServ1.service.Impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.tharuntech.Demo_MicroServ1.entity.Model.ValorantAPIResponseInfo;
-import com.tharuntech.Demo_MicroServ1.entity.Model.ValorantBundleInfo;
-import com.tharuntech.Demo_MicroServ1.entity.ValorantSkinHub;
+import com.tharuntech.Demo_MicroServ1.entity.Model.*;
+import com.tharuntech.Demo_MicroServ1.repository.RateingRepo;
 import com.tharuntech.Demo_MicroServ1.repository.ValoSkinHubRepo;
 import org.apache.logging.log4j.LogManager;
 
@@ -17,7 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import com.tharuntech.Demo_MicroServ1.service.ValorantSkinHubGetAllInfoService;
 
-import javax.swing.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,6 +34,9 @@ public class ValorantSkinHubGetAllInfoServiceImpl implements ValorantSkinHubGetA
 
     @Autowired
     private ValoSkinHubRepo valoSkinHubRepo;
+
+    @Autowired
+    private RateingRepo rateingRepo;
 
     private final Logger logger = LogManager.getLogger(ValorantSkinHubGetAllInfoServiceImpl.class);
 
@@ -76,15 +78,17 @@ public class ValorantSkinHubGetAllInfoServiceImpl implements ValorantSkinHubGetA
         //parse it to our ValorantSkinHub pojo and add to db
         if (allBundleInfo != null) {
             List<ValorantBundleInfo> allBundlesList = allBundleInfo.getData();
-            Integer count = 0;
+            Integer skinBundleCount = 0;
             for (ValorantBundleInfo BundleInfo : allBundlesList) {
 
                 //from here iterate and check in our database;
                 var uuid = BundleInfo.getUuid();
 
                 //if it exist then we dont add else we add the data
-                Optional<String> bundleuuidfromdb = valoSkinHubRepo.existdataByuuid(uuid);
-                if (bundleuuidfromdb.isEmpty()) {
+                Optional<String> bundleuuidfromSkintable = valoSkinHubRepo.existdataByuuid(uuid);
+                Optional<BundleRateing> bundleuuidfromRatingtable = rateingRepo.findByUuid(uuid);
+                //if the uuid is not present in the skin Table
+                if (bundleuuidfromSkintable.isEmpty()) {
                     var bundleName = BundleInfo.getDisplayName();
                     var iconVert = BundleInfo.getVerticalPromoImage();
                     var iconHori = BundleInfo.getDisplayIcon();
@@ -95,12 +99,18 @@ public class ValorantSkinHubGetAllInfoServiceImpl implements ValorantSkinHubGetA
                     BundleInfoadd.setIconVert(iconVert);
                     BundleInfoadd.setIconHori(iconHori);
                     valoSkinHubRepo.save(BundleInfoadd);
-                    count++;
+                    skinBundleCount++;
+                }
+
+                //if uuid is not present in the rating table
+                if (bundleuuidfromRatingtable.isEmpty()) {
+                    var RatingInfoAdd = new BundleRateing();
+                    RatingInfoAdd.setUuid(uuid);
                 }
 
             }
             logger.info("--------------ValorantSkinHubGetAllInfoServiceImpl.addDataFromExternalApiToOurDBthatNotExist() -- Service == Added exta successfull to db---------");
-            logger.info("--------------ValorantSkinHubGetAllInfoServiceImpl.addDataFromExternalApiToOurDBthatNotExist() -- Service == Updated Bundles added {}---------", count);
+            logger.info("--------------ValorantSkinHubGetAllInfoServiceImpl.addDataFromExternalApiToOurDBthatNotExist() -- Service == Updated skin Bundles added {}---------", skinBundleCount);
 
         } else {
             logger.error("--------------ValorantSkinHubGetAllInfoServiceImpl.addDataFromExternalApiToOurDBthatNotExist() -- Service == No data found in external api call---------");
@@ -130,6 +140,7 @@ public class ValorantSkinHubGetAllInfoServiceImpl implements ValorantSkinHubGetA
 
     }
 
+    //adds all bundles to our db
     @Override
     public String addAllBundlesTodb(String value) {
         Optional<ValorantSkinHub> allBundlesGotFromDb = valoSkinHubRepo.findById(1);
@@ -145,9 +156,49 @@ public class ValorantSkinHubGetAllInfoServiceImpl implements ValorantSkinHubGetA
         }
     }
 
+
+    //gets all skin bundle info
     @Override
-    public List<ValorantSkinHub> getAllBundels() {
+    public List<ValorantSkinHub> getAllSkinBundels() {
         return valoSkinHubRepo.findAll();
+    }
+
+    //gets all info skin bundle and rating
+    @Override
+    public List<ValoBundlePOJO> getAllInfo() {
+
+        var AllinfoList = new ArrayList<ValoBundlePOJO>();
+        var AllBundlesList = getAllSkinBundels();
+
+        var bundleInfo = new ValoBundlePOJO();
+
+        //Iterates over the SkinBundle and Rating , Adds it to allInfo
+        for (ValorantSkinHub skinBundleInfo : AllBundlesList) {
+            bundleInfo.setUuid(skinBundleInfo.getUuid());
+            bundleInfo.setBundleName(skinBundleInfo.getBundleName());
+
+            bundleInfo.setIconVert(skinBundleInfo.getIconVert());
+            bundleInfo.setIconHori(skinBundleInfo.getIconHori());
+
+            bundleInfo.setRateing(skinBundleInfo.getRating());
+            bundleInfo.setBundleAvail(skinBundleInfo.getBundleAvail());
+
+            bundleInfo.setCurrencyType(skinBundleInfo.getCurrencyType());
+            bundleInfo.setPrice(skinBundleInfo.getPrice());
+
+            var uuid = skinBundleInfo.getUuid();
+
+            Optional<BundleRateing> bundleRateing = rateingRepo.findByUuid(uuid);
+            if (bundleRateing.isPresent()) {
+                bundleInfo.setRating(bundleRateing.get().getRateing());
+                bundleInfo.setRateingCount(bundleRateing.get().getRateingCount());
+            }
+            AllinfoList.add(bundleInfo);
+            bundleInfo = null;
+
+        }
+        logger.info("---number of rows sent to view --" + AllinfoList.size());
+        return AllinfoList;
     }
 
 
