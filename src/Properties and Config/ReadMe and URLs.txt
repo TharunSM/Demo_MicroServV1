@@ -21,6 +21,8 @@ add slf4j or aop
  //make a method to store the data from calling the bellow method and storing it in a db below and call that db in a new method and send the data with our required params
     //https://console.aiven.io/account/a4f7084bd2b9/project/tharunterror9840-0892/services/mysqldb-valoranthub/overview
 
+
+by default runs in port 8091
 Buy or use a cheap vps to host the application in cloud for domain use netlify
 
 make some endpoints admin only like update, insert
@@ -28,6 +30,8 @@ make some endpoints admin only like update, insert
 
 we can nginx wo run of http server
 we can use certbot if we want free ssl if we buy a domain
+
+change from laptop c
 
 add credits to the api
 
