@@ -11,7 +11,10 @@ VALORANT RATING FEATURE:
 VALORANT BUNDLE AVAILABILITY:
 ---is it store rotational or seasonal or event---
 
-IF you like to contribute or suggest any features or spot any issues, you can open a Issue with the tag or fork it and raise a pr - *will be reviewed in a week
+IF you like to contribute or suggest any features or spot any issues,
+you can open a Issue with the tag or fork it and raise a pr - *will be reviewed in a week
+
 FEATURES TO ADD:
 ---Will add YEAR OF BUNDLE RELEASE---
+
 *If u want more info and project progress visit the readme in the project file*
