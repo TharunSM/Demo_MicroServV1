@@ -13,6 +13,13 @@ setup up your db password in environment variable as VALO_HUB_DB_PASSWORD
 
 using this api to get valorant skin bundle info
 https://valorant-api.com/v1/bundles
+
+
+If we want to update the rating in the db for a bundle:
+(current rating from db + our presently added rating sent by the user) / the total rating count
+convert it to round() and add it back to the db for that uid
+
+rateing count -- number of users rated this bundle
 --------------------------------------------------
 
 Features:
@@ -25,7 +32,7 @@ Main Table must contain bundle details - must add
 
 add slf4j or aop - doing
 
-must add POST methods for adding review for that given bundle
+must add POST methods for adding rateing for that given bundle
 
 
 ----------------------------------------------------
